@@ -1,0 +1,49 @@
+/* Tăng kích thước chữ cho toàn bộ trang */
+body {
+    font-size: 16px; /* Tăng kích thước chữ toàn trang */
+    font-family: Arial, sans-serif; /* Kiểu chữ dễ đọc */
+    line-height: 1.6; /* Tăng khoảng cách dòng để dễ nhìn hơn */
+}
+
+/* Chỉnh riêng sidebar */
+.sidebar {
+    font-size: 16px; /* Tăng kích thước chữ trong sidebar */
+    color: #ffffff;
+    background-color: #343a40;
+    padding: 20px;
+    width: 200px;
+}
+
+.sidebar h3 {
+    font-size: 18px; /* Tiêu đề sidebar lớn hơn một chút */
+    margin-bottom: 10px;
+}
+
+.sidebar a {
+    font-size: 16px; /* Kích thước chữ cho các liên kết */
+    display: block;
+    padding: 10px;
+    background-color: #212529;
+    color: white;
+    text-decoration: none;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.sidebar a:hover {
+    background-color: #495057;
+}
+
+/* Chỉnh submenu */
+.submenu li a {
+    font-size: 16px; /* Kích thước chữ của submenu */
+    padding: 8px 12px;
+    color: white;
+    background-color: #495057;
+    border-radius: 4px;
+    text-decoration: none;
+}
+
+.submenu li a:hover {
+    background-color: #6c757d;
+}
