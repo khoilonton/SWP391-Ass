@@ -66,10 +66,15 @@ public class AccountServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
      int id = Integer.parseInt(request.getParameter("userId"));
-      String newStatus = request.getParameter("status");
+      String newStatus = request.getParameter("status");    
       AccountDAO accDao= new AccountDAO();
-      accDao.updateAccountStatus(id, newStatus);
-      response.sendRedirect(request.getContextPath() + "/AccountManager");
+      if (accDao.updateAccountStatus(id, newStatus)) {
+        request.setAttribute("message", "Update success");
+    } else {
+        request.setAttribute("message", "Update fail");
+    }
+
+     response.sendRedirect(request.getContextPath() + "/AccountManager");
     }
 
     /**

@@ -26,7 +26,7 @@ public class DiscountDAO {
         try ( ResultSet rs = ne.execSelectQuery(query)) {
             while (rs.next()) {
                 DisList.add(
-                        new Discount(rs.getInt(1), rs.getInt(2), rs.getDate(3), rs.getDouble(4), rs.getString(5), rs.getInt(6), rs.getInt(7),rs.getDate(8))
+                        new Discount(rs.getInt(1), rs.getInt(2), rs.getDate(3), rs.getDouble(4), rs.getString(5), rs.getInt(6), rs.getInt(7), rs.getDate(8))
                 );
             }
         } catch (SQLException ex) {
@@ -45,7 +45,7 @@ public class DiscountDAO {
         DB.DBContext ne = new DBContext();
         try ( ResultSet rs = ne.execSelectQuery(query, param)) {
             if (rs.next()) {
-                return new Discount(rs.getInt(1), rs.getInt(2), rs.getDate(3), rs.getDouble(4), rs.getString(5), rs.getInt(6), rs.getInt(7),rs.getDate(8));
+                return new Discount(rs.getInt(1), rs.getInt(2), rs.getDate(3), rs.getDouble(4), rs.getString(5), rs.getInt(6), rs.getInt(7), rs.getDate(8));
             }
         } catch (SQLException ex) {
             Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -53,6 +53,7 @@ public class DiscountDAO {
         return null;
 
     }
+
     public int create(Discount discount) {
         String getNextID = "select max(DisID)+1 as nextID \n"
                 + "from Discount";
@@ -79,21 +80,21 @@ public class DiscountDAO {
     }
 
     public int update(Discount discount) {
-        String sql = "update Discount set MinOrderValue=?,Expiry_date=?,Percent_discount=?,Code=?,Used_count=?,Limit_code=?,Start_date=? \n"
+        String query = "update Discount set MinOrderValue=?,Expiry_date=?,Percent_discount=?,Code=?,Used_count=?,Limit_code=?,Start_date=? \n"
                 + "where DisID = ?";
-          DB.DBContext ne = new DBContext();
+        DB.DBContext ne = new DBContext();
         Object[] params = {
-         discount.getMinOrder(),
+            discount.getMinOrder(),
             discount.getExpiry_date(),
             discount.getPercent(),
             discount.getCode(),
-                discount.getUsed_count(),
-                discount.getLimit_code(),
-                discount.getStart_date(),
-                discount.getDis_id()
+            discount.getUsed_count(),
+            discount.getLimit_code(),
+            discount.getStart_date(),
+            discount.getDis_id()
         };
         try {
-            return ne.execQuery(sql, params);
+            return ne.execQuery(query, params);
         } catch (SQLException ex) {
             Logger.getLogger(DiscountDAO.class.getName()).log(Level.SEVERE, null, ex);
             return 0;
@@ -101,19 +102,15 @@ public class DiscountDAO {
     }
 
     public int delete(int id) {
-      String sql = "delete from Discount where DisID = ?";
-        String upID = "update Discount set DisID=DisID-1 where FlowerID>?";
+        String sql = "delete from Discount where DisID = ?";
         Object[] params = {id};
         DB.DBContext ne = new DBContext();
         try {
-            int eid;
-          ne.execQuery(sql, params);
-            eid = ne.execQuery(upID, params);
-            return eid;
+            return ne.execQuery(sql, params);
+
         } catch (SQLException ex) {
             return 0;
         }
-
     }
 
     public static void main(String[] args) {

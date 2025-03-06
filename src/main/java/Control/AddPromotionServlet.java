@@ -81,9 +81,10 @@ public class AddPromotionServlet extends HttpServlet {
                 proDAO.createPromoProduct(promoID, Integer.parseInt(productID));
             }
         }
+         request.setAttribute("error", "Add success");
         response.sendRedirect("PromotionManager");
     } else {
-        request.setAttribute("error", "Tạo khuyến mãi thất bại!");
+        request.setAttribute("error", "Add fail");
         request.getRequestDispatcher("WEB-INF/AddPromotion.jsp").forward(request, response);
     }
     }

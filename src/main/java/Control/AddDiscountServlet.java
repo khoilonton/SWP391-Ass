@@ -66,6 +66,7 @@ public class AddDiscountServlet extends HttpServlet {
         DiscountDAO disDAO = new DiscountDAO();
         if (disDAO.create(new Discount(0, min_value, end_date, percent, code, usedCount, limitCode, start_date)) == 1) {
             response.sendRedirect("DiscountManager");
+            
         } else {
             String mess = "Tao discount bi loi";
             request.setAttribute("mess", mess);

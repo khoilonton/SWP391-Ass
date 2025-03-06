@@ -5,6 +5,7 @@
 package Control;
 
 import DAO.FeebackDAO;
+import Model.Customer;
 import Model.Feeback;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,6 +14,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -47,6 +50,8 @@ public class FeebackServlet extends HttpServlet {
             throws ServletException, IOException {
         FeebackDAO feeDAO= new FeebackDAO();
         ArrayList<Feeback> feeList= feeDAO.getAll();
+        Map<Integer,List<Customer>> nameList= feeDAO.getNameCus();
+        request.setAttribute("nameList", nameList);
         request.setAttribute("feeList", feeList);
         request.getRequestDispatcher("WEB-INF/CommentManager.jsp").forward(request, response);    
     }
@@ -69,18 +74,18 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
         String status = request.getParameter("status");
         boolean isUpdated = feeDAO.updateStatus(feedbackID, status);
         if (isUpdated) {
-            request.setAttribute("message", "Status updated successfully!");
+            request.setAttribute("message", "Approve success");
         } else {
-            request.setAttribute("message", "Failed to update status.");
+            request.setAttribute("message", "Approve success");
         }
         response.sendRedirect(request.getContextPath() + "/FeebackManager");
     } else if ("delete".equalsIgnoreCase(action)) {
         int feedbackID = Integer.parseInt(request.getParameter("feedbackID"));
         boolean isDeleted = feeDAO.delete(feedbackID);
         if (isDeleted) {
-            request.setAttribute("message", "Feedback deleted successfully!");
+            request.setAttribute("message", "Delete success");
         } else {
-            request.setAttribute("message", "Failed to delete Feedback.");
+            request.setAttribute("message", "Delete  fail");
         }
         response.sendRedirect(request.getContextPath() + "/FeebackManager");
     }

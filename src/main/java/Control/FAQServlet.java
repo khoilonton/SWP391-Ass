@@ -4,21 +4,24 @@
  */
 package Control;
 
-import DAO.CustomerDAO;
-import Model.Customer;
+import DAO.FAQDAO;
+import Model.FAQ;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 
 /**
  *
  * @author TrangTrongKhoi-CE180958
  */
-public class CustomerDetailServlet extends HttpServlet {
+@WebServlet(name = "FAQServlet", urlPatterns = {"/faq"})
+public class FAQServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -29,8 +32,7 @@ public class CustomerDetailServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-
-
+    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -43,13 +45,12 @@ public class CustomerDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int cus_id = Integer.parseInt(request.getParameter("id"));  
-        CustomerDAO cusDAO = new CustomerDAO();
-        Customer customer = cusDAO.getByid(cus_id);   
-        int total= cusDAO.getTotalInvoices(cus_id);
-        request.setAttribute("total", total);
-        request.setAttribute("customer", customer);
-        request.getRequestDispatcher("WEB-INF/ViewDetailCustomer.jsp").forward(request, response);
+          FAQDAO faqDAO = new FAQDAO(); // Tạo đối tượng FAQDAO
+        List<FAQ> faqList = faqDAO.getAll(); // Gọi phương thức getAll()
+
+        request.setAttribute("faqList", faqList);
+
+        request.getRequestDispatcher("WEB-INF/customerFaq.jsp").forward(request, response);
     }
 
     /**

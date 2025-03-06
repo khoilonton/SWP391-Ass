@@ -4,7 +4,9 @@
  */
 package Control;
 
+import DAO.AccountDAO;
 import DAO.CustomerDAO;
+import Model.Account;
 import Model.Customer;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,7 +15,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
-
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -31,8 +34,6 @@ public class CustomerServelet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-   
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -45,10 +46,19 @@ public class CustomerServelet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        CustomerDAO cusDAO= new CustomerDAO();
-        ArrayList<Customer> cusList= cusDAO.getAll();
+        CustomerDAO cusDAO = new CustomerDAO();
+        ArrayList<Customer> cusList = cusDAO.getAll();
+        Map<Integer, List<Account>> accList = cusDAO.getStatusAcc();
+
+        for (Customer cus : cusList) {
+            int totalInvoices = cusDAO.getTotalInvoices(cus.getCus_id());
+            int totalAmount = cusDAO.getTotalAmount(cus.getCus_id());
+            cus.setTotalInvoices(totalInvoices);
+            cus.setTotalAmount(totalAmount);
+        }
         request.setAttribute("cusList", cusList);
-        request.getRequestDispatcher("WEB-INF/ViewCustomer.jsp").forward(request, response);
+        request.setAttribute("accList", accList);
+        request.getRequestDispatcher("WEB-INF/ViewDetailCustomer.jsp").forward(request, response);
     }
 
     /**
@@ -62,6 +72,11 @@ public class CustomerServelet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("userId"));
+        String newStatus = request.getParameter("status");
+        AccountDAO accDao = new AccountDAO();
+        accDao.updateAccountStatus(id, newStatus);
+        response.sendRedirect ("CustomerManager");
     }
 
     /**

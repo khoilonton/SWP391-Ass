@@ -25,7 +25,8 @@ import java.util.Map;
  */
 @WebServlet(name = "PromotionServlet", urlPatterns = {"/PromotionManager"})
 public class PromotionServlet extends HttpServlet {
-
+          int currentPage = 1;
+        int pageSize = 5; 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -48,13 +49,24 @@ public class PromotionServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        PromotionDAO promoDAO= new PromotionDAO();
-        ArrayList<Promotion> promoList= promoDAO.getAll();
-        Map<Integer,List<Product>>promoProduct= promoDAO.getPromoProduct();
+ 
+        try {
+            currentPage = Integer.parseInt(request.getParameter("page"));
+        } catch (NumberFormatException e) {
+            currentPage = 1;
+        }
+        PromotionDAO promoDAO = new PromotionDAO();
+        ArrayList<Promotion> promoList = promoDAO.getAll(currentPage, pageSize);
+        Map<Integer, List<Product>> promoProduct = promoDAO.getPromoProduct(currentPage, pageSize);
+        int totalPromos = promoDAO.getSize();
+        int totalPages = (int) Math.ceil((double) totalPromos / pageSize);
         request.setAttribute("promoList", promoList);
         request.setAttribute("promoProduct", promoProduct);
-        request.getRequestDispatcher("WEB-INF/ViewPromotion.jsp").forward(request, response);  
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("currentPage", currentPage);
+       request.getRequestDispatcher("WEB-INF/ViewPromotion.jsp").forward(request, response);
     }
+    
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -68,7 +80,6 @@ public class PromotionServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     }
-
     /**
      * Returns a short description of the servlet.
      *

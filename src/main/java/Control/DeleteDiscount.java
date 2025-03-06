@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-
 /**
  *
  * @author TrangTrongKhoi-CE180958
@@ -31,8 +30,6 @@ public class DeleteDiscount extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-  
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -45,7 +42,7 @@ public class DeleteDiscount extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         String idParam = request.getParameter("id");
+        String idParam = request.getParameter("id");
         if (idParam == null || idParam.isEmpty()) {
             request.setAttribute("errorMessage", "Discount ID not found.");
         } else {
@@ -79,17 +76,21 @@ public class DeleteDiscount extends HttpServlet {
         try {
             int id = Integer.parseInt(request.getParameter("id"));
             DiscountDAO disDAO = new DiscountDAO();
-            if (disDAO.delete(id) == 1) {
-                response.sendRedirect("DiscountManager?message=delete_success");
+
+            int result = disDAO.delete(id);
+
+            if (result == 1) {
+                request.setAttribute("successMessage", "Delete success");
             } else {
-                request.setAttribute("errorMessage", "Deletion failed. Please try again.");
-                request.getRequestDispatcher("WEB-INF/DeleteDiscount.jsp").forward(request, response);
+                request.setAttribute("errorMessage", "Error: Discount not found.");
             }
+         response.sendRedirect("DiscountManager");
+
         } catch (NumberFormatException e) {
             request.setAttribute("errorMessage", "Invalid discount ID.");
             request.getRequestDispatcher("WEB-INF/DeleteDiscount.jsp").forward(request, response);
         }
-       
+
     }
 
     /**

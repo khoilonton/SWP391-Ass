@@ -89,9 +89,10 @@ public class EditPromotionServlet extends HttpServlet {
                 promoDAO.createPromoProduct(promoID, Integer.parseInt(productID));
             }
         }
+        request.setAttribute("errorMessage", "Update success");
         response.sendRedirect("PromotionManager");
     } else {
-        request.setAttribute("errorMessage", "Failed to update promotion.");
+        request.setAttribute("errorMessage", "Update fail ");
         doGet(request, response);
     }
     }

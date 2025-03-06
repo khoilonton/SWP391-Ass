@@ -14,25 +14,15 @@ public class Feeback  {
     private int customer_id;
     private int order_id;
     private String status;
-    private Customer cus;
     public Feeback() {
     }
 
-    public Feeback(int feeback_id, String content, int customer_id, int order_id, String status, int cus_id, String name) {
+    public Feeback(int feeback_id, String content, int customer_id, int order_id, String status) {
         this.feeback_id = feeback_id;
         this.content = content;
         this.customer_id = customer_id;
         this.order_id = order_id;
         this.status = status;
-       this.cus = new Customer(name);
-    }
-
-    public Customer getCus() {
-        return cus;
-    }
-
-    public void setCus(Customer cus) {
-        this.cus = cus;
     }
 
     public int getFeeback_id() {
@@ -74,4 +64,6 @@ public class Feeback  {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    
 }

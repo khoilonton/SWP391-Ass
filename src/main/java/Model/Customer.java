@@ -15,6 +15,15 @@ public class Customer {
     private String address;
     private int user_id;
     private int totalInvoices;
+    private int totalAmount;
+
+    public int getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(int totalAmount) {
+        this.totalAmount = totalAmount;
+    }
 
     public int getTotalInvoices() {
         return totalInvoices;

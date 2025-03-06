@@ -88,9 +88,10 @@ public class EditDiscount extends HttpServlet {
         int limitCode = Integer.parseInt(request.getParameter("limitCode"));
                 DiscountDAO disDAO= new DiscountDAO();
             if (disDAO.update(new Discount(discountID,min_value,end_date,percent,code,usedCount,limitCode,start_date)) == 1) {
+                    request.setAttribute("errorMessage", "Update success");
                          response.sendRedirect("DiscountManager");
             } else {
-                request.setAttribute("errorMessage", "Failed to update the discount. Please try again.");
+                request.setAttribute("errorMessage", "Update fail");
                     request.getRequestDispatcher("WEB-INF/EditDiscount.jsp").forward(request, response);
             }
         } catch (NumberFormatException e) {

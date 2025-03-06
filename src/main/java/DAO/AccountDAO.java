@@ -6,6 +6,8 @@ package DAO;
 
 import Model.Account;
 import DB.DBContext;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -43,14 +45,76 @@ public class AccountDAO {
         }
     }
 
-    public boolean updateAccountStatus(int userId, String newStatus) {
-        String query = "update Account set Status = ? where UserID = ?";
+    // Lấy tài khoản theo UserID
+    public Account getAccountByUserID(int userID) {
+        String query = "SELECT * FROM Account WHERE UserID = ?";
         DBContext db = new DBContext();
+        
+        try (Connection conn = db.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setInt(1, userID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapResultSetToAccount(rs);
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return null;
+    }
+
+    // Cập nhật trạng thái tài khoản
+    public boolean updateAccountStatus(int userId, String newStatus) {
+        String query = "UPDATE Account SET Status = ? WHERE UserID = ?";
+        DBContext db = new DBContext();
+        Object[] param = {newStatus, userId};
+        
         try {
-            return db.execQuery(query, new Object[]{newStatus, userId}) > 0;
+            return db.execQuery(query, param) > 0;
         } catch (SQLException ex) {
             Logger.getLogger(AccountDAO.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
+    }
+
+
+        public Account authenticate(String username, String password) {
+        Account account = null;
+        String sql = "SELECT * FROM Account WHERE Username = ? AND Password = ?";
+        DBContext db = new DBContext();
+        try ( Connection conn = db.getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, username.trim());
+            ps.setString(2, password.trim());
+            try ( ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    account = new Account();
+                    account.setUserID(rs.getInt("UserID"));
+                    account.setUserName(rs.getString("Username"));
+                    account.setRole(rs.getString("Role"));
+                    account.setEmail(rs.getString("Email"));
+                    account.setPassword(rs.getString("Password"));
+                    account.setStatus(rs.getString("Status"));
+                }
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return account;
+    }
+           private Account mapResultSetToAccount(ResultSet rs) throws SQLException {
+        Account account = new Account();
+        account.setUserID(rs.getInt("UserID"));
+        account.setEmail(rs.getString("Email"));
+        account.setRole(rs.getString("Role"));
+        account.setUserName(rs.getString("Username"));
+        account.setPassword(rs.getString("Password"));
+        account.setStatus(rs.getString("Status"));
+        return account;
     }
 }

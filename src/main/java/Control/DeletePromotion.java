@@ -5,6 +5,7 @@
 package Control;
 
 import DAO.PromotionDAO;
+import Model.Promotion;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 
 
 /**
@@ -44,9 +46,12 @@ public class DeletePromotion extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-      
+              int promoId = Integer.parseInt(request.getParameter("id"));
+      PromotionDAO promoDAO= new PromotionDAO();
+        Promotion promoList= promoDAO.getPromotionById(promoId);
+      request.setAttribute("promoList",promoList);
+      request.getRequestDispatcher("WEB-INF/DeletePromotion.jsp").forward(request, response);
     }
-
     /**
      * Handles the HTTP <code>POST</code> method.
      *
@@ -58,23 +63,21 @@ public class DeletePromotion extends HttpServlet {
     @Override
   protected void doPost(HttpServletRequest request, HttpServletResponse response)
          throws ServletException, IOException {
-           String promoId = request.getParameter("id");
-//      PromotionDAO promotionDAO = new PromotionDAO();
-//
-//       try {
-//        //  boolean isDeleted = promotionDAO.deletePromotion(promoId);
-//
-//          if (isDeleted) {
-//             response.sendRedirect("PromotionManager"); // Trở về trang danh sách sau khi xóa
-//          } else {
-//              request.setAttribute("errorMessage", "⚠️ Failed to delete promotion.");
-//               request.getRequestDispatcher("DeletePromotion.jsp").forward(request, response);
-//           }
-//       } catch (Exception e) {
-//           e.printStackTrace();
-//           request.setAttribute("errorMessage", "❌ Error occurred while deleting promotion.");
-//           request.getRequestDispatcher("DeletePromotion.jsp").forward(request, response);       
-//       }
+           int promoId = Integer.parseInt(request.getParameter("id"));
+      PromotionDAO promotionDAO = new PromotionDAO();
+
+       try {
+          boolean isDeleted = promotionDAO.deletePromotion(promoId);
+          if (isDeleted) {
+             response.sendRedirect("PromotionManager");
+          } else {
+              request.setAttribute("errorMessage", "Failed to delete promotion.");
+               request.getRequestDispatcher("DeletePromotion.jsp").forward(request, response);
+           }
+       } catch (Exception e) {
+           request.setAttribute("errorMessage", "Error occurred while deleting promotion.");
+           request.getRequestDispatcher("DeletePromotion.jsp").forward(request, response);       
+       }
     }
    
 

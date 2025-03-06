@@ -8,10 +8,6 @@
         <servlet-name>FeebackServlet</servlet-name>
         <servlet-class>Control.FeebackServlet</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>CustomerDetailServlet</servlet-name>
-        <servlet-class>Control.CustomerDetailServlet</servlet-class>
-    </servlet>
     <servlet-mapping>
         <servlet-name>AccountServlet</servlet-name>
         <url-pattern>/AccountManager</url-pattern>
@@ -19,10 +15,6 @@
     <servlet-mapping>
         <servlet-name>FeebackServlet</servlet-name>
         <url-pattern>/FeebackManager</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CustomerDetailServlet</servlet-name>
-        <url-pattern>/CustomerDetail</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
