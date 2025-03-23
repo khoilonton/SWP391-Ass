@@ -20,30 +20,50 @@ import java.util.logging.Logger;
  */
 public class AccountDAO {
 
-    public ArrayList<Account> getAll() {
-        ArrayList<Account> AccountList = new ArrayList<>();
-        String query = "select *\n"
-                + "from Account as a \n"
-                + "where a.Role<>'admin'";
-        DB.DBContext ne = new DBContext();
-        try ( ResultSet rs = ne.execSelectQuery(query)) {
-            while (rs.next()) {
-                AccountList.add(new Account(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6)));
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(AccountDAO.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Error retrieving movies");
+public ArrayList<Account> getAll(int currentPage, int pageSize) {
+    ArrayList<Account> accountList = new ArrayList<>();
+    String query = "SELECT * FROM Account WHERE Role <> 'admin' ORDER BY UserID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+    DB.DBContext db = new DBContext();
+    
+    try (ResultSet rs = db.execSelectQuery(query, new Object[]{(currentPage - 1) * pageSize, pageSize})) {
+        while (rs.next()) {
+            accountList.add(new Account(
+                rs.getInt(1), 
+                rs.getString(2), 
+                rs.getString(3), 
+                rs.getString(4), 
+                rs.getString(5), 
+                rs.getString(6)
+            ));
         }
-        return AccountList;
+    } catch (SQLException ex) {
+        Logger.getLogger(AccountDAO.class.getName()).log(Level.SEVERE, null, ex);
     }
+    return accountList;
+}
+public int getTotalAccounts() {
+    String query = "SELECT COUNT(*) FROM Account WHERE Role <> 'admin'";
+    DBContext db = new DBContext();
+    
+    try (ResultSet rs = db.execSelectQuery(query, new Object[]{})) {
+        if (rs.next()) {
+            return rs.getInt(1);
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(AccountDAO.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return 0;
+}
 
-    public static void main(String[] args) {
-        AccountDAO accDao = new AccountDAO();
-        ArrayList<Account> list = accDao.getAll();
-        for (Account account : list) {
-            System.out.println(account.getEmail());
-        }
-    }
+
+//    public static void main(String[] args) {
+//        AccountDAO accDao = new AccountDAO();
+//        ArrayList<Account> list = accDao.getAll();
+//        for (Account account : list) {
+//            System.out.println(account.getEmail());
+//        }
+//    }
 
     // Lấy tài khoản theo UserID
     public Account getAccountByUserID(int userID) {

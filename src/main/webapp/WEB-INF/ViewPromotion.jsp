@@ -56,12 +56,9 @@
     <body>
 
         <div class="wrapper">
-            <!-- Sidebar -->
             <div id="sidebar">
                 <%@ include file="admin-sidebar.jsp" %>
             </div>
-
-            <!-- Nội dung chính -->
             <div id="main-content">
                 <h1>Promotion Manager</h1>
 
@@ -91,7 +88,6 @@
                                 <td class="text-center">${proList.end_date}</td>
                                 <td>${proList.description}</td>
                                 <td>
-
                                     <c:forEach var="product" items="${promoProduct[proList.promo_id]}">
                                         <span class="badge bg-primary">${product.name}</span>
                                     </c:forEach>

@@ -27,13 +27,12 @@ import java.util.logging.Logger;
  * @author TrangTrongKhoi-CE180958
  */
 public class OrderDAO {
-
-    public ArrayList<Order> getAll() {
+    public ArrayList<Order> getAll(int currentPage, int pageSize ) {
         ArrayList<Order> orderList = new ArrayList<>();
-        String query = "select * from Orders";
+        String query = "select * from Orders   ORDER BY OrderID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
         DBContext ne = new DBContext();
 
-        try ( ResultSet rs = ne.execSelectQuery(query);) {
+        try ( ResultSet rs = ne.execSelectQuery(query,new Object[]{(currentPage - 1) * pageSize, pageSize});) {
             while (rs.next()) {
                 orderList.add(new Order(rs.getInt(1), rs.getDate(2), rs.getDouble(3), rs.getString(4), rs.getString(5), rs.getInt(6), rs.getInt(7), rs.getInt(8), rs.getInt(9)));
             }
@@ -52,13 +51,13 @@ public class OrderDAO {
             while (rs.next()) {
                 Order order = new Order();
                 order.setOrder_id(rs.getInt("OrderID"));
-                order.setOder_date(rs.getDate("Order_Date")); // Đổi thành order_date
+                order.setOder_date(rs.getDate("Order_Date")); 
                 order.setTotal_amount(rs.getDouble("TotalAmount"));
                 order.setStatus(rs.getString("Status"));
                 order.setCancell(rs.getString("CancellationReason"));
                 order.setCus_id(rs.getInt("CustomerID"));
-                order.setDis_id(rs.getObject("DisID") != null ? rs.getInt("DisID") : 0); // Đổi null thành 0
-                order.setPromo_id(rs.getObject("PromoID") != null ? rs.getInt("PromoID") : 0); // Đổi null thành 0
+                order.setDis_id(rs.getObject("DisID") != null ? rs.getInt("DisID") : 0); 
+                order.setPromo_id(rs.getObject("PromoID") != null ? rs.getInt("PromoID") : 0); 
                 order.setUsed_discount(rs.getInt("Used_Discount"));
 
                 orders.add(order);
@@ -82,7 +81,6 @@ public class OrderDAO {
                 + "WHERE o.CustomerID = ? AND o.Status = 'Delivered'";
 
         try ( Connection conn = new DBContext().getConnection();  PreparedStatement ps = conn.prepareStatement(sql)) {
-
             ps.setInt(1, customerID);
             ResultSet rs = ps.executeQuery();
 
@@ -92,7 +90,6 @@ public class OrderDAO {
                 order.setOder_date(rs.getDate("Order_Date"));
                 order.setTotal_amount(rs.getDouble("TotalAmount"));
                 order.setStatus(rs.getString("Status"));
-
                 Product product = new Product();
                 product.setPro_id(rs.getInt("ProID"));
                 product.setName(rs.getString("ProName"));
@@ -129,7 +126,7 @@ public class OrderDAO {
                 return rs.getString("Payment_method");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+      
         }
         return "Không xác định";
     }
@@ -143,7 +140,7 @@ public class OrderDAO {
                 return rs.getString("Payment_status");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+       
         }
         return "Không xác định";
     }
@@ -230,7 +227,6 @@ public class OrderDAO {
         String query = "select o.OrderID, p.ProID, p.ProName\n"
                 + "   from OrderDetail o\n"
                 + "  join Product as p on o.ProID=p.ProID";
-
         DBContext db = new DBContext();
         try ( ResultSet rs = db.execSelectQuery(query)) {
             while (rs.next()) {
@@ -345,6 +341,21 @@ public class OrderDAO {
         }
         return orders;
     }
+
+public int getTotalOrderCount() {
+    String query = "SELECT COUNT(*) FROM Orders";
+    try (Connection conn = new DBContext().getConnection();
+         PreparedStatement ps = conn.prepareStatement(query);
+         ResultSet rs = ps.executeQuery()) {
+        if (rs.next()) {
+            return rs.getInt(1);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return 0;
+}
+
 
     public static void main(String[] args) {
         OrderDAO orderDAO = new OrderDAO();

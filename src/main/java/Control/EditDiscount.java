@@ -50,14 +50,17 @@ public class EditDiscount extends HttpServlet {
         String idParam = request.getParameter("id");
         if (idParam == null || idParam.isEmpty()) {
             request.setAttribute("errorMessage", "There is no discount with that ID");
+            request.getRequestDispatcher("WEB-INF/EditDiscount.jsp").forward(request, response);
         } else {
             try {
                 int id = Integer.parseInt(idParam);
                 Discount  discount = disDAO.getByid(id);
                 if (discount == null) {
                     request.setAttribute("errorMessage", "There is no discount with that ID");
+                      request.getRequestDispatcher("WEB-INF/EditDiscount.jsp").forward(request, response);
                 } else {
                     request.setAttribute("discount", discount);
+                      request.getRequestDispatcher("WEB-INF/EditDiscount.jsp").forward(request, response);
                 }
             } catch (NumberFormatException e) {
                 request.setAttribute("errorMessage", "Invalid discount ID");

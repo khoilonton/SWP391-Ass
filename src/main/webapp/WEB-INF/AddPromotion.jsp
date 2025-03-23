@@ -72,7 +72,7 @@
             </form>
         </div>
         <div class="text-center mt-3">
-            <a href="ViewPromotion.jsp" class="btn btn-secondary">⬅ Back</a>
+            <a href="PromotionManager" class="btn btn-secondary">⬅ Back</a>
         </div>
     </body>
 </html>

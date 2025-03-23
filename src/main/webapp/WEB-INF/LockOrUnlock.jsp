@@ -53,68 +53,89 @@
     </head>
     <body>
         <div class="wrapper">
-    <%@ include file="admin-sidebar.jsp" %>
-    <div class="container mt-5">
-        <div class="header">
-            <h2 class="mb-4">Account Management</h2>
-        </div>
+            <%@ include file="admin-sidebar.jsp" %>
+            <div class="container mt-5">
+                <div class="header">
+                    <h2 class="mb-4">Account Management</h2>
+                </div>
 
-        <c:if test="${not empty message}">
-            <div class="alert alert-info alert-dismissible fade show" role="alert">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        </c:if>
+                <c:if test="${not empty message}">
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </c:if>
 
-        <table class="table table-bordered table-striped text-center">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Name</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>      
-            </thead>
-            <tbody>
-                <c:forEach var="acc" items="${accList}">
-                    <tr>
-                        <td>${acc.userID}</td>
-                        <td>${acc.email}</td>
-                        <td>${acc.role}</td>
-                        <td>${acc.userName}</td>
-                        <td>
-                            <c:choose>
-                                <c:when test="${acc.status eq 'inactive'}">
-                                    <span class="badge bg-danger">Inactive</span>
-                                </c:when>
-                                <c:otherwise>
-                                    <span class="badge bg-success">Active</span>
-                                </c:otherwise>
-                            </c:choose>
-                        </td>
-                        <td>
-                            <form method="POST" action="AccountManager">
-                                <input type="hidden" name="userId" value="${acc.userID}">
-                                <c:choose>
-                                    <c:when test="${acc.status eq 'inactive'}">
-                                        <input type="hidden" name="status" value="active">
-                                        <button type="submit" class="btn btn-success">Unlock</button>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <input type="hidden" name="status" value="inactive">
-                                        <button type="submit" class="btn btn-danger">Lock</button>
-                                    </c:otherwise>
-                                </c:choose>
-                            </form>
-                        </td>
-                    </tr>
-                </c:forEach>
-            </tbody>
-        </table>
+                <table class="table table-bordered table-striped text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Name</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>      
+                    </thead>
+                    <tbody>
+                        <c:forEach var="acc" items="${accList}">
+                            <tr>
+                                <td>${acc.userID}</td>
+                                <td>${acc.email}</td>
+                                <td>${acc.role}</td>
+                                <td>${acc.userName}</td>
+                                <td>
+                                    <c:choose>
+                                        <c:when test="${acc.status eq 'inactive'}">
+                                            <span class="badge bg-danger">Inactive</span>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <span class="badge bg-success">Active</span>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </td>
+                                <td>
+                                    <form method="POST" action="AccountManager">
+                                        <input type="hidden" name="userId" value="${acc.userID}">
+                                        <c:choose>
+                                            <c:when test="${acc.status eq 'inactive'}">
+                                                <input type="hidden" name="status" value="active">
+                                                <button type="submit" class="btn btn-success">Unlock</button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <input type="hidden" name="status" value="inactive">
+                                                <button type="submit" class="btn btn-danger">Lock</button>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </form>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+
+                <div class="d-flex justify-content-between">
+                    <ul class="pagination">
+                        <!-- Nút Previous -->
+                        <li class="page-item <c:if test="${currentPage == 1}">disabled</c:if>">
+                            <a class="page-link" href="<c:if test='${currentPage > 1}'>AccountManager?page=${currentPage - 1}</c:if>">Previous</a>
+                            </li>
+
+                            <!-- Các số trang -->
+                        <c:forEach var="i" begin="1" end="${totalPages}">
+                            <li class="page-item <c:if test="${i == currentPage}">active</c:if>">
+                                <a class="page-link" href="AccountManager?page=${i}">${i}</a>
+                            </li>
+                        </c:forEach>
+
+                        <!-- Nút Next -->
+                        <li class="page-item <c:if test="${currentPage == totalPages}">disabled</c:if>">
+                            <a class="page-link" href="<c:if test='${currentPage < totalPages}'>AccountManager?page=${currentPage + 1}</c:if>">Next</a>
+                        </li>
+                    </ul>
+                </div>
 
 
-    </body>
-</html>
-    
+
+                </body>
+                </html>

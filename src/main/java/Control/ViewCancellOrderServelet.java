@@ -36,10 +36,27 @@ public class ViewCancellOrderServelet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        CancelltionDAO callDAO = new CancelltionDAO();
-        ArrayList<Cancellation>cancellList = callDAO.getAll();
-        request.setAttribute("cancellList", cancellList);
-        request.getRequestDispatcher("WEB-INF/ViewCancellOrder.jsp").forward(request, response); 
+        int page = 1;
+    int pageSize = 5;
+    String pageParam = request.getParameter("page");
+    if (pageParam != null) {
+        try {
+            page = Integer.parseInt(pageParam);
+        } catch (NumberFormatException e) {
+            page = 1; 
+        }
+    }
+
+    CancelltionDAO callDAO = new CancelltionDAO();
+    ArrayList<Cancellation> cancellList = callDAO.getAll(page, pageSize);
+    int totalRecords = callDAO.getTotalRecords();
+    int totalPages = (int) Math.ceil((double) totalRecords / pageSize);
+
+    request.setAttribute("cancellList", cancellList);
+    request.setAttribute("currentPage", page);
+    request.setAttribute("totalPages", totalPages);
+
+    request.getRequestDispatcher("WEB-INF/ViewCancellOrder.jsp").forward(request, response);
     }
 
     /**

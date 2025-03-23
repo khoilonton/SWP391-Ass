@@ -26,10 +26,18 @@ public class Order {
 
     private String feedbackContent;
     private Payment payment;
-
+    private Product product;
     private List<OrderDetail> orderDetails = new ArrayList<>();
 
     public Order() {
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
     public Order(int order_id, Date oder_date, double total_amount, String cancell, String status, int cus_id, int dis_id, int promo_id, int used_discount) {

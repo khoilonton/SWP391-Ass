@@ -38,6 +38,9 @@
         <h1 class="text-center mb-4">Edit Discount</h1>
         <div class="card shadow p-4 mx-auto" style="max-width: 500px;">
             <form action="EditDiscount" method="POST">
+                <c:if test="${not empty errorMessage}">
+        <div class="alert alert-danger">${errorMessage}</div>
+    </c:if>
                 <div class="mb-3">
                     <label class="form-label">Discount ID:</label>
                     <input type="text" name="discountID" class="form-control" value="${discount.dis_id}" readonly>

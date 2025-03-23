@@ -38,6 +38,9 @@ public class Product {
         this.price = price;
         this.start_end = start_end;
     }
+    public Product( String name) {
+    this.name = name;
+}
 
     public int getPro_id() {
         return pro_id;

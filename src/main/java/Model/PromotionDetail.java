@@ -9,9 +9,12 @@ package Model;
  * @author TrangTrongKhoi-CE180958
  */
 public class PromotionDetail {
-    public int promodetail_id;
-    public int promo_id;
-    public int pro_id;
+    private int promodetail_id;
+    private int promo_id;
+    private int pro_id;
+    private Product product;
+    private Promotion promotion;
+    
 
     public PromotionDetail() {
     }
@@ -20,6 +23,22 @@ public class PromotionDetail {
         this.promodetail_id = promodetail_id;
         this.promo_id = promo_id;
         this.pro_id = pro_id;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public Promotion getPromotion() {
+        return promotion;
+    }
+
+    public void setPromotion(Promotion promotion) {
+        this.promotion = promotion;
     }
 
     public int getPromodetail_id() {
