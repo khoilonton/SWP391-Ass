@@ -24,7 +24,8 @@ import java.util.Map;
  */
 @WebServlet(name = "ViewOrderListAdmin", urlPatterns = {"/ViewOrderListAdmin"})
 public class ViewOrderListAdmin extends HttpServlet {
-
+  int currentPage = 1;
+        int pageSize = 5; 
     
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -39,11 +40,20 @@ public class ViewOrderListAdmin extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+          try {
+            currentPage = Integer.parseInt(request.getParameter("page"));
+        } catch (NumberFormatException e) {
+            currentPage = 1;
+        }
         OrderDAO orderDAO= new OrderDAO();
-        ArrayList<Order> orderList= orderDAO.getAll();
+        ArrayList<Order> orderList= orderDAO.getAll(currentPage,pageSize);
         Map<Integer,List<Product>> productList=orderDAO.getProductsByOrder();
+        int totalPromos= orderDAO.getTotalOrderCount();
+          int totalPages = (int) Math.ceil((double) totalPromos / pageSize);
         request.setAttribute("productList", productList);
         request.setAttribute("orderList", orderList);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("currentPage", currentPage);
         request.getRequestDispatcher("WEB-INF/ViewOrderAdminList.jsp").forward(request, response);
     }
 

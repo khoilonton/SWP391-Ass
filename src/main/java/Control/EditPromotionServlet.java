@@ -44,19 +44,36 @@ public class EditPromotionServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        int promoID = Integer.parseInt(request.getParameter("id"));
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    String idParam = request.getParameter("id");
+
+    if (idParam == null || idParam.trim().isEmpty()) {
+        request.setAttribute("errorMessage", "Promotion ID cannot be blank!");
+        request.getRequestDispatcher("WEB-INF/EditPromotion.jsp").forward(request, response);
+        return;
+    }
+
+    try {
+        int promoID = Integer.parseInt(idParam);
         PromotionDAO promoDAO = new PromotionDAO();
         Promotion promotion = promoDAO.getPromotionById(promoID);
+        if (promotion == null) {
+            request.setAttribute("errorMessage", "Promotion ID does not exist!");
+            request.getRequestDispatcher("WEB-INF/EditPromotion.jsp").forward(request, response);
+            return;
+        }
         ArrayList<Product> productList = promoDAO.getProduct();
-        List<Integer> selectedProducts = promoDAO.getProductsByPromoID(promoID);
+        List<Integer> selectedProducts = promoDAO.getProductsByPromoID(promoID);  
         request.setAttribute("promotion", promotion);
         request.setAttribute("productList", productList);
         request.setAttribute("selectedProducts", selectedProducts);
-        request.getRequestDispatcher("/WEB-INF/EditPromotion.jsp").forward(request, response);
-
+        request.getRequestDispatcher("WEB-INF/EditPromotion.jsp").forward(request, response);
+    } catch (NumberFormatException e) {
+        request.setAttribute("errorMessage", "Promotion ID is invalid!");
+        request.getRequestDispatcher("WEB-INF/EditPromotion.jsp").forward(request, response);
     }
+}
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -67,35 +84,39 @@ public class EditPromotionServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    try {
         int promoID = Integer.parseInt(request.getParameter("id"));
         String name = request.getParameter("name");
         String description = request.getParameter("description");
         Date startDate = Date.valueOf(request.getParameter("start_date"));
         Date endDate = Date.valueOf(request.getParameter("end_date"));
         double percent = Double.parseDouble(request.getParameter("percent"));
-         String[] selectedProductIDs = request.getParameterValues("productID");
+        String[] selectedProductIDs = request.getParameterValues("productID");
 
         PromotionDAO promoDAO = new PromotionDAO();
         Promotion promotion = new Promotion(promoID, description, name, startDate, endDate, percent);
 
         boolean success = promoDAO.updatePromotion(promotion);
-
         if (success) {
-        promoDAO.deletePromoProducts(promoID);
-        if (selectedProductIDs != null) {
-            for (String productID : selectedProductIDs) {
-                promoDAO.createPromoProduct(promoID, Integer.parseInt(productID));
+            promoDAO.deletePromoProducts(promoID);
+            if (selectedProductIDs != null) {
+                for (String productID : selectedProductIDs) {
+                    promoDAO.createPromoProduct(promoID, Integer.parseInt(productID));
+                }
             }
+            response.sendRedirect("PromotionManager");
+        } else {
+            request.setAttribute("errorMessage", "Update failed. Please try again!");
+            request.setAttribute("promotion", promotion);
+            doGet(request, response);
         }
-        request.setAttribute("errorMessage", "Update success");
-        response.sendRedirect("PromotionManager");
-    } else {
-        request.setAttribute("errorMessage", "Update fail ");
+    } catch (NumberFormatException e) {
+        request.setAttribute("errorMessage", "Invalid data! Please check again.");
         doGet(request, response);
     }
-    }
+}
 
     /**
      * Returns a short description of the servlet.

@@ -76,7 +76,6 @@
                                 <td>
                                     <a href="OrderDetailAdmin?orderID=${order.order_id}" class="btn btn-link">${order.order_id}</a>
                                 </td>
-
                                 <td>${order.oder_date}</td>
                                 <td>${order.total_amount}</td>
                                 <td>${order.status}</td>
@@ -107,7 +106,30 @@
                         </c:forEach>
                     </tbody>
                 </table>
+                <div class="d-flex justify-content-between mt-4">
+    <nav>
+        <ul class="pagination">
+            <c:if test="${currentPage > 1}">
+                <li class="page-item">
+                    <a class="page-link" href="ViewOrderListAdmin?page=${currentPage - 1}">Previous</a>
+                </li>
+            </c:if>  
+            <c:forEach var="i" begin="1" end="${totalPages}">
+                <li class="page-item ${i == currentPage ? 'active' : ''}">
+                    <a class="page-link" href="ViewOrderListAdmin?page=${i}">${i}</a>
+                </li>
+            </c:forEach>
+            <c:if test="${currentPage < totalPages}">
+                <li class="page-item">
+                    <a class="page-link" href="ViewOrderListAdmin?page=${currentPage + 1}">Next</a>
+                </li>
+            </c:if>
+        </ul>
+    </nav>
+</div>
             </div>
         </div>
+            
+
     </body>
 </html>

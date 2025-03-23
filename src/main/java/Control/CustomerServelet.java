@@ -24,7 +24,8 @@ import java.util.Map;
  */
 @WebServlet(name = "CustomerServelet", urlPatterns = {"/CustomerManager"})
 public class CustomerServelet extends HttpServlet {
-
+int page = 1;
+    int recordsPerPage = 5;
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -41,25 +42,34 @@ public class CustomerServelet extends HttpServlet {
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
+     * @throws IOException if an I/O error occurss
      */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        CustomerDAO cusDAO = new CustomerDAO();
-        ArrayList<Customer> cusList = cusDAO.getAll();
-        Map<Integer, List<Account>> accList = cusDAO.getStatusAcc();
+   @Override
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
+    CustomerDAO cusDAO = new CustomerDAO();
 
-        for (Customer cus : cusList) {
-            int totalInvoices = cusDAO.getTotalInvoices(cus.getCus_id());
-            int totalAmount = cusDAO.getTotalAmount(cus.getCus_id());
-            cus.setTotalInvoices(totalInvoices);
-            cus.setTotalAmount(totalAmount);
-        }
-        request.setAttribute("cusList", cusList);
-        request.setAttribute("accList", accList);
-        request.getRequestDispatcher("WEB-INF/ViewDetailCustomer.jsp").forward(request, response);
+     
+    if (request.getParameter("page") != null) {
+        page = Integer.parseInt(request.getParameter("page"));
     }
+    ArrayList<Customer> cusList = cusDAO.getCustomersByPage(page, recordsPerPage);
+    int totalCustomers = cusDAO.getTotalCustomers();
+    int totalPages = (int) Math.ceil((double) totalCustomers / recordsPerPage);
+    Map<Integer, List<Account>> accList = cusDAO.getStatusAcc();
+    for (Customer cus : cusList) {
+        int totalInvoices = cusDAO.getTotalInvoices(cus.getCus_id());
+        int totalAmount = cusDAO.getTotalAmount(cus.getCus_id());
+        cus.setTotalInvoices(totalInvoices);
+        cus.setTotalAmount(totalAmount);
+    }
+    request.setAttribute("cusList", cusList);
+    request.setAttribute("accList", accList);
+    request.setAttribute("currentPage", page);
+    request.setAttribute("totalPages", totalPages);
+    request.getRequestDispatcher("WEB-INF/ViewDetailCustomer.jsp").forward(request, response);
+}
+
 
     /**
      * Handles the HTTP <code>POST</code> method.

@@ -25,21 +25,19 @@ import java.util.logging.Logger;
  */
 public class CustomerDAO {
 
-    public ArrayList<Customer> getAll() {
-        ArrayList<Customer> cusList = new ArrayList<>();
-        String query = "select * \n"
-                + "from [dbo].[Customer]";
-        DB.DBContext ne = new DBContext();
-        try ( ResultSet rs = ne.execSelectQuery(query)) {
-            while (rs.next()) {
-                cusList.add(new Customer(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getString(4), rs.getInt(5)));
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(FeebackDAO.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Error retrieving movies");
+ public ArrayList<Customer> getCustomersByPage(int page, int recordsPerPage) {
+    ArrayList<Customer> cusList = new ArrayList<>();
+    String query = "SELECT * FROM Customer ORDER BY CustomerID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+    DBContext ne = new DBContext();
+    try (ResultSet rs = ne.execSelectQuery(query, new Object[]{(page - 1) * recordsPerPage, recordsPerPage})) {
+        while (rs.next()) {
+            cusList.add(new Customer(rs.getInt(1), rs.getString(2), rs.getInt(3), rs.getString(4), rs.getInt(5)));
         }
-        return cusList;
+    } catch (SQLException ex) {
+        Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
     }
+    return cusList;
+}
 
     public Customer getByid(int cus_id) {
         String sql = "select *\n"
@@ -135,6 +133,19 @@ public class CustomerDAO {
         }
         return khachhangID;
     }
+public int getTotalCustomers() {
+    String query = "SELECT COUNT(*) FROM Customer";
+    DBContext ne = new DBContext();
+    int count = 0;
+    try (ResultSet rs = ne.execSelectQuery(query)) {
+        if (rs.next()) {
+            count = rs.getInt(1);
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(CustomerDAO.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return count;
+}
 
     private Customer mapResultSetToCustomer(ResultSet rs) throws SQLException {
         Customer customer = new Customer();
@@ -145,13 +156,13 @@ public class CustomerDAO {
         return customer;
     }
 
-    public static void main(String[] args) {
-        CustomerDAO cusDAO = new CustomerDAO();
-        ArrayList<Customer> list = cusDAO.getAll();
-        for (Customer account : list) {
-            System.out.println(account.getName());
-        }
-        System.out.println(cusDAO.getByid(1).getName());
-
-    }
+//    public static void main(String[] args) {
+//        CustomerDAO cusDAO = new CustomerDAO();
+//        ArrayList<Customer> list = cusDAO.getAll();
+//        for (Customer account : list) {
+//            System.out.println(account.getName());
+//        }
+//        System.out.println(cusDAO.getByid(1).getName());
+//
+//    }
 }

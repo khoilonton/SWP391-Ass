@@ -84,7 +84,32 @@
                         </c:forEach>
                     </tbody>
                 </table>
+                        <div class="d-flex justify-content-between">
+            <nav>
+                <ul class="pagination">
+                    <c:if test="${currentPage > 1}">
+                        <li class="page-item">
+                            <a class="page-link" href="CustomerManager?page=${currentPage - 1}">Previous</a>
+                        </li>
+                    </c:if>
+
+                    <c:forEach var="i" begin="1" end="${totalPages}">
+                        <li class="page-item ${i == currentPage ? 'active' : ''}">
+                            <a class="page-link" href="CustomerManager?page=${i}">${i}</a>
+                        </li>
+                    </c:forEach>
+
+                    <c:if test="${currentPage < totalPages}">
+                        <li class="page-item">
+                            <a class="page-link" href="CustomerManager?page=${currentPage + 1}">Next</a>
+                        </li>
+                    </c:if>
+                </ul>
+            </nav>
+        </div>
             </div>
         </div>
+
+
     </body>
 </html>

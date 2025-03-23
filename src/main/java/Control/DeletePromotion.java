@@ -46,11 +46,24 @@ public class DeletePromotion extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-              int promoId = Integer.parseInt(request.getParameter("id"));
-      PromotionDAO promoDAO= new PromotionDAO();
-        Promotion promoList= promoDAO.getPromotionById(promoId);
-      request.setAttribute("promoList",promoList);
+              String idParam = request.getParameter("id");
+    if (idParam == null || !idParam.matches("\\d+")) {
+        request.setAttribute("errorMessage", "Invalid Promotion ID.");
       request.getRequestDispatcher("WEB-INF/DeletePromotion.jsp").forward(request, response);
+        return;
+    }
+
+    int promoId = Integer.parseInt(idParam);
+    PromotionDAO promoDAO = new PromotionDAO();
+    Promotion promoList = promoDAO.getPromotionById(promoId);
+    if (promoList == null) {
+        request.setAttribute("errorMessage", "Promotion ID not found.");
+        request.getRequestDispatcher("WEB-INF/DeletePromotion.jsp").forward(request, response);
+        return;
+    }
+
+    request.setAttribute("promoList", promoList);
+    request.getRequestDispatcher("WEB-INF/DeletePromotion.jsp").forward(request, response);
     }
     /**
      * Handles the HTTP <code>POST</code> method.

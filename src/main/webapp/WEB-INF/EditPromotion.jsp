@@ -43,7 +43,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Discount Percent:</label>
-                    <input type="number" class="form-control" name="percent" value="${promotion.percent}" step="0.01" required>
+                    <input type="number" class="form-control" name="percent"  min="0" max="100"value="${promotion.percent}" step="0.01" required>
                 </div>
 
                 <div class="mb-3">
@@ -56,7 +56,7 @@
                             </option>
                         </c:forEach>
                     </select>
-                    <small class="text-muted">Giữ Ctrl (Windows) hoặc Command (Mac) để chọn nhiều sản phẩm.</small>
+                    <small class="text-muted">Hold Ctrl (Windows) or Command (Mac) to select multiple products.</small>
                 </div>
 
                 <div class="d-flex justify-content-between">

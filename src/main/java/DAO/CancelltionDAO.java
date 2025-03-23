@@ -17,29 +17,37 @@ import java.util.logging.Logger;
  * @author TrangTrongKhoi-CE180958
  */
 public class CancelltionDAO {
-    public ArrayList<Cancellation> getAll(){
-    ArrayList<Cancellation>cancellList= new ArrayList<>();
-    String query="select * from Cancellation";
-     DB.DBContext ne = new DBContext();
-        try ( ResultSet rs = ne.execSelectQuery(query)) {
-            while (rs.next()) {
-                cancellList.add(
-                    new Cancellation(rs.getInt(1), rs.getInt(2), rs.getDate(3), rs.getString(4))
-                );
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(CancelltionDAO.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Error retrieving movies");
-        }
-        return cancellList;
+    public ArrayList<Cancellation> getAll(int currentPage, int pageSize) {
+    ArrayList<Cancellation> cancellList = new ArrayList<>();
+    String query = "SELECT * FROM Cancellation ORDER BY CancelID OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
     
-    
-    }
-    public static void main(String[] args) {
-       CancelltionDAO caDAO = new CancelltionDAO();
-         ArrayList<Cancellation>cancellList=caDAO.getAll();
-         for (Cancellation cancellation : cancellList) {
-             System.out.println(cancellation.getOrder_id());
+    DB.DBContext ne = new DBContext();
+    try (ResultSet rs = ne.execSelectQuery(query, new Object[]{(currentPage - 1) * pageSize, pageSize})) {
+        while (rs.next()) {
+            cancellList.add(new Cancellation(
+                rs.getInt(1), 
+                rs.getInt(2),  
+                rs.getDate(3),      
+                rs.getString(4) 
+            ));
         }
+    } catch (SQLException ex) {
+        Logger.getLogger(CancelltionDAO.class.getName()).log(Level.SEVERE, null, ex);
     }
+    return cancellList;
+}
+
+public int getTotalRecords() {
+    String query = "SELECT COUNT(*) FROM Cancellation";
+    DB.DBContext ne = new DBContext();
+    try (ResultSet rs = ne.execSelectQuery(query)) {
+        if (rs.next()) {
+            return rs.getInt(1);
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(CancelltionDAO.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return 0;
+}
+
 }

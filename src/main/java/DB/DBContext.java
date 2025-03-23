@@ -65,14 +65,14 @@ public class DBContext {
         }
         return preparedStatement.executeUpdate();
     }
-//    public static void main(String[] args) {
-//    DBContext db = new DBContext();
-//    if (db.getConnection() != null) {
-//        System.out.println("Kết nối thành công!");
-//    } else {
-//        System.out.println("Kết nối thất bại!");
-//    }
-//}
+    public static void main(String[] args) {
+    DBContext db = new DBContext();
+    if (db.getConnection() != null) {
+        System.out.println("Kết nối thành công!");
+    } else {
+        System.out.println("Kết nối thất bại!");
+    }
+}
 
 }
 
